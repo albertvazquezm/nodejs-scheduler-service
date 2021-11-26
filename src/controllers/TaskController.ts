@@ -8,7 +8,7 @@ export class TaskController {
     static async getAllTasks(req: Request, res: Response, next: NextFunction) {
         debug(`getting all tasks`);
         const tasks = await TaskService.getAllTasks();
-        res.send(tasks);
+        res.json(tasks);
     }
     static async getTask(req: Request, res: Response, next: NextFunction) {
         debug(`getting one task with id`, req.params.id);
@@ -31,6 +31,10 @@ export class TaskController {
             res.status(400).json({error: `one of the following properties must be informed: scheduleDate, scheduleRecurring`});
             return next();
         }
+        if(scheduleRecurring && scheduleDate) {
+            res.status(400).json({error: `only one of this following properties must be informed: scheduleDate, scheduleRecurring`});
+            return next();
+        }
         if(!JobRunnerService.checkJobIdExisists(jobId)) {
             res.status(404).json({error: `the provided jobId doesn't exist`});
             return next();
@@ -47,6 +51,10 @@ export class TaskController {
         }
         if(!JobRunnerService.checkJobIdExisists(jobId)) {
             res.status(404).json({error: `the provided jobId doesn't exist`});
+            return next();
+        }
+        if(scheduleRecurring && scheduleDate) {
+            res.status(400).json({error: `only one of this following properties must be informed: scheduleDate, scheduleRecurring`});
             return next();
         }
         if(!scheduleDate && !scheduleRecurring) {

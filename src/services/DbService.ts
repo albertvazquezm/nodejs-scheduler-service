@@ -16,7 +16,7 @@ export class DbService {
         client = new MongoClient(uri);
         return client.connect();
     }
-    static createTask(jobId: string, scheduleDate?: string, scheduleRecurring?: string): Promise<string> {
+    static createTask(jobId: string, scheduleDate: string | null, scheduleRecurring: string | null): Promise<string> {
         debug(`Creating task`);
         if(!client) {
             throw new Error(`client not initialized`);
@@ -35,7 +35,7 @@ export class DbService {
         if(!client) {
             throw new Error(`client not initialized`);
         }
-        return client.db(db).collection<DbTask>(TASK_COLLECTION).findOneAndUpdate({_id: new ObjectId(taskId)}, {jobId, scheduleDate, scheduleRecurring}).then(result => result.value);
+        return client.db(db).collection<DbTask>(TASK_COLLECTION).findOneAndUpdate({_id: new ObjectId(taskId)}, {$set: {jobId, scheduleDate, scheduleRecurring}}, {returnDocument: 'after'}).then(result => result.value);
     }
     static getAllTasks(): Promise<DbTask[]> {
         debug(`Getting all tasks`);

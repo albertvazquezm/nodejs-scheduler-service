@@ -1,7 +1,39 @@
 # Scheduler Service
-Use this service to schedule tasks
+Use this service to schedule jobs. A schedule job is called a "Task". It's created using NodeJS, TypeScript, Express and Jest. For the job scheduler, it's using node-schedule.
+
+It stores the tasks in a MongoDB database in order to retrieve them again in case the service stops.
+
+All the terminated jobs are removed automatically from the DB. Additionaly, it has a mechanism for deleting tasks with dates in the past on application start.
+
+## This is a WIP :)
+
+This application a minimal working example and there are areas that need to be improved:
+
+- Validations: Dates in the past or malformed, invalid cron-style strings...
+- Unit testing: Coverage is pretty basic
+- Logging: There is only minimal logging in place using Debug module.
+- End-to-end testing
+- Better error handling (404, send detailed error messages...)
+
+## Run
+
+To run the application, execute `npm run start`
+To run the tests, execute: `npm run test`
+
+*Configuration*
+
+This project requires configuration to connect to DB. You can use .env file with following variables:
+
+```
+MONGO_URI=<your connection string>
+PORT=3000
+DB=<db name>
+DEBUG=* // Check debug module configuration for details
+```
 
 ## API
+
+This services exposes a REST API for controlling the tasks. **A Task is a scheduled job that will run at a specific time.**
 
 ### POST /task
 
@@ -14,7 +46,6 @@ JSON Body
     scheduleRecurring: string (optional) // Cron-style string (see below)
 }
 ```
-
 #### Property description
 
 * If scheduleDate and scheduleRecurring are not informed, **the job will run inmediately**
@@ -23,6 +54,8 @@ JSON Body
 **jobId**
 
 Use the ID of the job you want to run / schedule
+
+Predefined jobs for demo purposes
 
 | ID             | Description                |
 |----------------|----------------------------|
@@ -70,6 +103,37 @@ Cron-style string documentation
 
 Check out the complete cron-style string documentation here: https://www.npmjs.com/package/node-schedule
 
+### GET /task
+
+Gets all tasks
+
+### GET /task/:id
+
+Gets a specific task
+
+### DELETE /task/:id
+
+Deletes a specific task
+
+### PUT /task/:id
+
+Updates a specific task
+
+```
+{
+    jobId: string
+    scheduleDate: string (optional) // Date to run the job, in ISO 8601 format
+    scheduleRecurring: string (optional) // Cron-style string (see below)
+}
+```
+
+## Logging
+
+This service has minimal debugging in place using "debug" module
+
+## Unit testing
+
+The application has some initial unit testing with Jest
 
 
 

@@ -1,14 +1,14 @@
 {
   "name": "scheduler-service",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A service that allows you to schedule jobs",
+  "main": "src/index.ts",
   "scripts": {
-    "test": "jest",
+    "test": "jest --watchAll",
     "start": "tsnd -r dotenv/config src/index.ts"
   },
   "keywords": [],
-  "author": "",
+  "author": "hola@albertvazquez.es",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",

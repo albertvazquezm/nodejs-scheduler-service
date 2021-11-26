@@ -8,7 +8,7 @@ const debug = Debug(`App:TaskService`);
 const localScheduledJobs = new Map<string, Job>();
 
 export class TaskService {
-    static async scheduleTask(jobId: string, existingTaskId: string | null, scheduleDate?: string, scheduleRecurring?: string): Promise<string> {
+    static async scheduleTask(jobId: string, existingTaskId: string | null, scheduleDate: string | null, scheduleRecurring: string | null): Promise<string> {
         debug(`scheduling task`)
         const taskId = existingTaskId || await DbService.createTask(jobId, scheduleDate, scheduleRecurring);
         if (scheduleDate) {
@@ -48,7 +48,7 @@ export class TaskService {
         }
         localScheduledJobs.get(updatedTask._id.toString())!.cancel();
         localScheduledJobs.delete(updatedTask._id.toString())
-        TaskService.scheduleTask(updatedTask.jobId, updatedTask._id.toString(), updatedTask.scheduleDate, updatedTask.scheduleRecurring)
+        await TaskService.scheduleTask(updatedTask.jobId, updatedTask._id.toString(), updatedTask.scheduleDate, updatedTask.scheduleRecurring)
     }
     static getAllTasks() {
         debug(`getting all tasks`)
